@@ -18,9 +18,19 @@
 </main></div>
 <dialog id="modal"><form method="dialog"><div class="dialog-head">新建需求</div><div class="dialog-body"><label class="wide">需求名称<input id="fName" required placeholder="例如：导师周报批量生成"/></label><label>模块<input id="fModule" required placeholder="例如：老师点评"/></label><label>优先级<select id="fPriority"><option>P0</option><option selected>P1</option><option>P2</option></select></label><label>开发状态<select id="fStatus"><option>待开发</option><option>规划中</option><option>已设计待开发</option></select></label><label>目标版本<select id="fVersion"><option>V1.1</option><option>V1.2</option><option>V1.3</option><option>V1.4</option></select></label><label>建议排期<input id="fSchedule" placeholder="例如：第 5-6 周"/></label><label class="wide">验收摘要<input id="fAcceptance" placeholder="写明可验证的交付结果"/></label></div><div class="dialog-foot"><button class="button" value="cancel">取消</button><button class="button primary" id="saveReq" value="default">保存需求</button></div></form></dialog>
 <script>
-const docs=[['少年马斯克创业营系统-终极产品文档.md','产品终极文档','系统范围、角色、流程与功能基线'],['少年马斯克创业营系统PRD-落地版.md','PRD 落地版','页面结构、权限规则、功能映射'],['少年马斯克创业营-需求池.md','需求池与版本排期','32 条需求、路线图、维护规则'],['少年马斯克创业营系统-关键规则确认.md','关键规则确认','业务边界、数据与权限约束'],['少年马斯克创业营-营地记录表设计方案.md','营地记录表设计方案','老师记录与成长证据采集方案']];
+const docs=[
+  ['少年马斯克创业营系统-终极产品文档.md','产品终极文档','系统范围、角色、流程与功能基线'],
+  ['少年马斯克创业营系统PRD-落地版.md','PRD 落地版','页面结构、权限规则、功能映射'],
+  ['少年马斯克创业营-V1.1需求说明.md','V1.1 需求说明','V1.1 模块拆解与验收口径'],
+  ['少年马斯克创业营-需求池.md','需求池与版本排期','32 条需求、路线图、维护规则'],
+  ['少年马斯克创业营-产品需求四视角梳理.md','产品需求四视角梳理','用户/业务/数据/风险 四个角度'],
+  ['少年马斯克创业营-产品文档.md','产品文档','原始产品定位与基础结构'],
+  ['少年马斯克创业营-营地记录表设计方案.md','营地记录表设计方案','老师记录与成长证据采集方案'],
+  ['少年马斯克创业营系统-关键规则确认.md','关键规则确认','业务边界、数据与权限约束'],
+  ['Figma导入清单.md','Figma 导入清单','Figma 资产导入与映射记录']
+];
 const shots=[['01-设计方向.png','设计方向'],['02-设计系统.png','设计系统'],['03-登录与角色进入.png','登录与角色进入'],['04-学员端页面.png','学员端页面'],['05-老师端页面.png','老师端页面'],['06-家长端页面.png','家长端页面'],['07-管理后台首页.png','管理后台首页'],['08-营地与内容配置.png','营地与内容配置'],['09-记录报告相册反馈管理.png','记录、报告与反馈管理']];
-document.querySelector('#docList').innerHTML=docs.map(([file,title,desc])=>`<a class="doc" target="_blank" href="docs/${encodeURIComponent(file)}"><span class="doc-icon">▤</span><span><b>${title}</b><small>${desc}</small></span></a>`).join('');
+document.querySelector('#docList').innerHTML=docs.map(([file,title,desc])=>`<a class="doc" href="doc.html?file=${encodeURIComponent(file)}"><span class="doc-icon">▤</span><span><b>${title}</b><small>${desc}</small></span></a>`).join('');
 document.querySelector('#gallery').innerHTML=shots.map(([file,title])=>`<figure class="shot"><a target="_blank" href="assets/design/${encodeURIComponent(file)}"><img src="assets/design/${encodeURIComponent(file)}" alt="${title}"></a><figcaption>${title}</figcaption></figure>`).join('');
 const releases=[['V1.0','上线基线','已上线','done','核验既有后台的营地、人员、内容、招生与运营能力。'],['V1.1','营地运营优化','下一周期','','优化后台体验、老师点评、AI 美化与招生信息收集。'],['V1.2','专业评审协同','规划中','','顾问老师、投资人评委、项目评审与结果管理。'],['V1.3','游戏化与积分','规划中','','积分、徽章、成长进度与隐私可控的榜单。'],['V1.4','完整 AI 能力','规划中','','证据驱动的 AI 助手、成长报告、内容生成和治理。']];
 document.querySelector('#roadmap').innerHTML=releases.map(r=>`<article class="release"><div class="version">${r[0]} ${r[1]}</div><span class="status ${r[3]}">${r[2]}</span><div class="point"></div><p>${r[4]}</p></article>`).join('');
