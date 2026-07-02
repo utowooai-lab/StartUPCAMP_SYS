@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>文档 · StartUPCAMP SYS</title>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="docs-data.js"></script>
   <style>
     :root{
       --blue:#1467df;--navy:#102d5d;--ink:#172b4d;--muted:#667a9b;
@@ -200,44 +201,22 @@
 <script>
   // 文档清单：与 index.html 同步
   const DOCS = {
-  '少年马斯克创业营系统-终极产品文档.md': {
-      title: '产品终极文档',
-      desc: '系统范围、角色、流程与功能基线'
-    },
-    '少年马斯克创业营-后台管理需求与原型索引.md': {
-      title: '后台管理需求与原型索引',
-      desc: 'V1.1 后台 20 项需求、原型覆盖与待补页面'
-    },
-    '少年马斯克创业营-V1.0基础方案落地产品需求说明.md': {
-      title: 'V1.0 基础方案落地产品需求说明',
-      desc: '页面结构、权限规则、功能映射'
-    },
-    '少年马斯克创业营-V1.1优化营地运营需求说明.md': {
-      title: 'V1.1 优化营地运营需求说明',
-      desc: 'V1.1 模块拆解与验收口径'
-    },
-    '少年马斯克创业营-需求池.md': {
-      title: '需求池与版本排期',
-      desc: '32 条需求、路线图、维护规则'
-    },
-    '少年马斯克创业营系统-关键规则确认.md': {
-      title: '关键规则确认',
-      desc: '业务边界、数据与权限约束'
-    },
-    '少年马斯克创业营-营地记录表设计方案.md': {
-      title: '营地记录表设计方案',
-      desc: '老师记录与成长证据采集方案'
-    },
-    '少年马斯克创业营-产品需求四视角梳理.md': {
-      title: '产品需求四视角梳理',
-      desc: '用户/业务/数据/风险 四个角度'
-    }
+    '00-总产品文档.md': { title: '总产品文档', desc: '唯一正式产品主线：方向、边界、角色、规则、版本路线' },
+    '10-用户端V1.0基础方案产品需求说明.md': { title: '用户端 V1.0 基础方案', desc: '学员、家长、老师用户端基础业务闭环' },
+    '11-用户端V1.1运营优化产品说明.md': { title: '用户端 V1.1 运营优化', desc: '结合现有 HTML 原型与代码反推的用户端优化需求' },
+    '20-后台V1.0基础方案产品需求说明.md': { title: '后台 V1.0 基础方案', desc: '营地、用户、内容、任务、记录、反馈等后台基础管理' },
+    '21-后台V1.1基础方案产品需求说明.md': { title: '后台 V1.1 基础方案', desc: '营地上下文、招生、日程、记录、AI、看板等后台优化' },
+    '30-需求池与版本排期.md': { title: '需求池与版本排期', desc: '需求编号、优先级、状态与 V1.0-V1.4 路线' },
+    '40-工程文档.md': { title: '工程文档', desc: '源码结构、UUID 规则、API 模块、权限原则' }
   };
 
   // 解析 URL 参数
   const params = new URLSearchParams(location.search);
   const rawFile = params.get('file') || '少年马斯克创业营系统-终极产品文档.md';
   const file = decodeURIComponent(rawFile);
+  if (file === '30-需求池与版本排期.md') {
+    window.location.replace('requirements.html');
+  }
   const meta = DOCS[file] || { title: file, desc: 'Markdown 原文' };
 
   document.title = meta.title + ' · StartUPCAMP SYS';
@@ -249,34 +228,56 @@
 
   let rawMarkdown = '';
 
-  // 配置 marked：开启 GFM 表格、换行、任务列表
-  marked.setOptions({
-    gfm: true, breaks: false, tables: true,
-    headerIds: true, mangle: false
-  });
-
-  // 加载 Markdown
-  fetch('docs/' + encodeURIComponent(file))
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.text();
-    })
-    .then(md => {
-      rawMarkdown = md;
-      const html = marked.parse(md);
-      document.getElementById('docBody').innerHTML = html;
-      document.getElementById('docBody').hidden = false;
-      document.getElementById('state').hidden = true;
-      buildTOC();
-      bindAnchorScroll();
-    })
-    .catch(err => {
-      document.getElementById('state').innerHTML =
-        '<div class="icon">⚠️</div>' +
-        '<div><b>无法加载文档</b></div>' +
-        '<div style="margin-top:8px;font-size:13px">文件：' + file + '<br>原因：' + err.message + '</div>' +
-        '<div style="margin-top:18px"><a href="index.html">← 返回项目中枢</a></div>';
+  if (window.marked) {
+    // 配置 marked：开启 GFM 表格、换行、任务列表
+    marked.setOptions({
+      gfm: true, breaks: false, tables: true,
+      headerIds: true, mangle: false
     });
+  }
+
+  function escapeHTML(text){
+    return text.replace(/[&<>"']/g, ch => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+
+  function renderMarkdown(md){
+    rawMarkdown = md;
+    const html = window.marked
+      ? marked.parse(md)
+      : '<pre><code>' + escapeHTML(md) + '</code></pre>';
+    document.getElementById('docBody').innerHTML = html;
+    document.getElementById('docBody').hidden = false;
+    document.getElementById('state').hidden = true;
+    buildTOC();
+    bindAnchorScroll();
+  }
+
+  function showLoadError(err){
+    const rawHref = 'docs/' + encodeURIComponent(file);
+    document.getElementById('state').innerHTML =
+      '<div class="icon">⚠️</div>' +
+      '<div><b>无法加载文档</b></div>' +
+      '<div style="margin-top:8px;font-size:13px">文件：' + file + '<br>原因：' + err.message + '</div>' +
+      '<div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+      '<a class="button" href="' + rawHref + '">打开 Markdown 原文</a>' +
+      '<a class="button" href="index.html">返回项目中枢</a>' +
+      '</div>';
+  }
+
+  // file:// 打开时浏览器会拦截 fetch 读取本地 Markdown，因此优先使用 docs-data.js 的内置文档。
+  if (window.STARTUPCAMP_DOCS && Object.prototype.hasOwnProperty.call(window.STARTUPCAMP_DOCS, file)) {
+    renderMarkdown(window.STARTUPCAMP_DOCS[file]);
+  } else {
+    fetch('docs/' + encodeURIComponent(file))
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(renderMarkdown)
+      .catch(showLoadError);
+  }
 
   // 构建侧边目录
   function buildTOC(){

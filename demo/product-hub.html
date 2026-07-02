@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>少年马斯克创业营 · 产品中枢</title>
+  <style>
+    :root {
+      --canvas: #f3f8fc;
+      --surface: #ffffff;
+      --surface-soft: #f7fafd;
+      --ink: #172233;
+      --muted: #66758a;
+      --line: #dce6ef;
+      --blue: #1267e8;
+      --blue-soft: #eaf2ff;
+      --green: #128c62;
+      --green-soft: #e8f8f0;
+      --amber: #a86705;
+      --amber-soft: #fff4df;
+      --slate-soft: #edf2f7;
+      --shadow: 0 10px 30px rgba(34, 65, 93, 0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, select, input { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      grid-template-rows: 64px 1fr;
+    }
+
+    .topbar {
+      grid-column: 1 / -1;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px;
+      background: rgba(255,255,255,0.93);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .brand-mark {
+      width: 31px; height: 31px; display: grid; place-items: center; color: white;
+      border-radius: 8px; background: var(--blue); box-shadow: 0 8px 15px rgba(18,103,232,.23);
+    }
+    .brand-mark svg { width: 19px; height: 19px; }
+    .brand strong { font-size: 18px; white-space: nowrap; }
+    .brand span { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .header-meta { display: flex; gap: 10px; align-items: center; }
+    .header-meta span { color: var(--muted); font-size: 13px; }
+
+    .sidebar {
+      grid-row: 2;
+      padding: 22px 14px;
+      border-right: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+    }
+    .sidebar-title {
+      margin: 0 10px 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+    }
+    .nav { display: grid; gap: 4px; }
+    .nav button {
+      border: 0; border-radius: 7px; padding: 11px 12px; background: transparent;
+      color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700; text-align: left;
+    }
+    .nav button svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+    .nav button.active { background: var(--blue-soft); color: var(--blue); }
+    .nav button:hover { background: #f0f5fa; color: var(--ink); }
+    .sidebar-rule { height: 1px; background: var(--line); margin: 20px 10px; }
+    .sidebar-note { margin: 0 10px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .sidebar-note strong { display: block; color: var(--ink); margin-bottom: 3px; }
+    .source-links { display: grid; gap: 8px; margin-top: 12px; }
+    .source-links a { color: var(--blue); font-size: 12px; text-decoration: none; }
+
+    .workspace { min-width: 0; padding: 24px; }
+    .view { display: none; max-width: 1540px; margin: 0 auto; }
+    .view.active { display: block; }
+
+    .view-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .view-heading h1 { margin: 0; font-size: 26px; line-height: 1.2; }
+    .view-heading p { margin: 7px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .doc-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+    .button {
+      min-height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 7px;
+      color: var(--ink); background: white; font-size: 13px; font-weight: 750; cursor: pointer;
+    }
+    .button.primary { border-color: var(--blue); color: white; background: var(--blue); }
+    .button:hover { transform: translateY(-1px); box-shadow: 0 7px 15px rgba(34,65,93,.1); }
+
+    .document-layout { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 18px; align-items: start; }
+    .document-toc, .document-body, .pool-table, .release-plan { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .document-toc { position: sticky; top: 88px; padding: 14px; }
+    .document-toc strong { display: block; margin: 5px 8px 11px; font-size: 13px; }
+    .document-toc a { display: block; padding: 8px; color: var(--muted); font-size: 13px; text-decoration: none; border-radius: 6px; }
+    .document-toc a:hover { color: var(--blue); background: var(--blue-soft); }
+    .document-body { padding: 32px clamp(20px, 3vw, 46px); }
+    .document-body section { padding: 0 0 30px; margin-bottom: 28px; border-bottom: 1px solid var(--line); }
+    .document-body section:last-child { border: 0; padding-bottom: 0; margin-bottom: 0; }
+    .document-body h2 { margin: 0 0 13px; font-size: 20px; }
+    .document-body h3 { margin: 20px 0 10px; font-size: 16px; }
+    .document-body p, .document-body li { color: #405066; font-size: 14px; line-height: 1.78; }
+    .document-body ul { margin: 8px 0; padding-left: 20px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .summary-item { padding: 14px; border-left: 3px solid var(--blue); background: var(--surface-soft); }
+    .summary-item b { display: block; margin-bottom: 5px; font-size: 13px; }
+    .summary-item span { color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .doc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .doc-table th, .doc-table td { text-align: left; vertical-align: top; padding: 10px; border-bottom: 1px solid var(--line); line-height: 1.55; }
+    .doc-table th { color: var(--muted); font-weight: 800; background: var(--surface-soft); }
+    .doc-table td { color: #405066; }
+
+    .pool-layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 18px; align-items: start; }
+    .pool-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px; border-bottom: 1px solid var(--line); }
+    .pool-toolbar input, .pool-toolbar select {
+      height: 36px; border: 1px solid var(--line); border-radius: 7px; background: white; color: var(--ink); padding: 0 10px; font-size: 13px;
+    }
+    .pool-toolbar input { width: min(280px, 100%); flex: 1; }
+    .count { margin-left: auto; color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .table-scroll { overflow: auto; }
+    .pool-table table { width: 100%; min-width: 930px; border-collapse: collapse; }
+    .pool-table th, .pool-table td { padding: 12px 13px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; font-size: 13px; white-space: nowrap; }
+    .pool-table th { color: var(--muted); background: var(--surface-soft); font-size: 12px; font-weight: 800; }
+    .pool-table tbody tr { transition: background .15s ease; }
+    .pool-table tbody tr:hover { background: #f9fcff; }
+    .pool-table a { color: var(--blue); font-weight: 750; text-decoration: none; }
+    .feature-name { color: var(--ink); font-weight: 750; }
+    .priority, .state, .version { display: inline-flex; align-items: center; min-height: 24px; border-radius: 6px; padding: 0 8px; font-size: 12px; font-weight: 800; }
+    .priority.p0 { color: #a85207; background: #fff0e3; }
+    .priority.p1 { color: #9b6704; background: var(--amber-soft); }
+    .priority.p2 { color: #637085; background: var(--slate-soft); }
+    .state.done { color: #0a7350; background: var(--green-soft); }
+    .state.design { color: #6a5e13; background: #fff5cc; }
+    .state.todo { color: var(--blue); background: var(--blue-soft); }
+    .state.plan { color: #64748b; background: var(--slate-soft); }
+    .version { color: #405066; background: var(--surface-soft); }
+
+    .release-plan { overflow: hidden; }
+    .release-plan header { padding: 16px 18px; border-bottom: 1px solid var(--line); }
+    .release-plan header h2 { margin: 0; font-size: 16px; }
+    .release-plan header p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+    .release-list { padding: 8px 18px 18px; }
+    .release { position: relative; padding: 18px 0 18px 22px; border-left: 2px solid #d7e4f0; }
+    .release::before { content: ""; position: absolute; left: -6px; top: 22px; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+    .release:last-child { border-left-color: transparent; }
+    .release h3 { margin: 0; font-size: 15px; }
+    .release time { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+    .release p { margin: 9px 0; color: #405066; font-size: 13px; line-height: 1.6; }
+    .release ul { margin: 0; padding-left: 17px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .legend { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .legend div { color: var(--muted); font-size: 12px; }
+
+    .empty { display: none; padding: 38px; color: var(--muted); text-align: center; font-size: 14px; }
+    .footnote { margin: 14px 2px 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    @media (max-width: 1050px) {
+      .pool-layout { grid-template-columns: 1fr; }
+      .release-plan { display: grid; grid-template-columns: 1fr 1fr; }
+      .release-plan header { grid-column: 1 / -1; }
+      .release-list { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .release { padding-right: 6px; }
+      .legend { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 760px) {
+      .app { display: block; }
+      .topbar { position: sticky; padding: 0 14px; }
+      .brand strong { font-size: 15px; }
+      .brand span, .header-meta span { display: none; }
+      .sidebar { position: sticky; top: 64px; z-index: 8; padding: 8px 10px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .sidebar-title, .sidebar-rule, .sidebar-note { display: none; }
+      .nav { display: grid; grid-template-columns: 1fr 1fr; }
+      .nav button { justify-content: center; padding: 9px; }
+      .workspace { padding: 16px 12px 28px; }
+      .view-heading { align-items: flex-start; flex-direction: column; margin-bottom: 14px; }
+      .view-heading h1 { font-size: 22px; }
+      .document-layout { display: block; }
+      .document-toc { display: none; }
+      .document-body { padding: 22px 16px; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .doc-table { min-width: 620px; }
+      .document-body { overflow: hidden; }
+      .document-body .table-wrap { overflow: auto; }
+      .pool-toolbar { align-items: stretch; }
+      .pool-toolbar input, .pool-toolbar select { width: 100%; flex: auto; }
+      .count { margin-left: 0; }
+      .release-plan { display: block; }
+      .release-list { display: block; }
+      .release { margin-left: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12.5 20 4l-5.8 16-2.4-6.1L4 12.5Z" fill="currentColor"></path></svg></span>
+        <strong>少年马斯克创业营 · 产品中枢</strong>
+        <span>产品文档与需求池</span>
+      </div>
+      <div class="header-meta"><span id="updateDate">更新于 2026-06-22</span><button class="button" id="copyLink" type="button">复制当前视图</button></div>
+    </header>
+
+    <aside class="sidebar">
+      <p class="sidebar-title">产品资产</p>
+      <nav class="nav" aria-label="主导航">
+        <button class="active" type="button" data-view="document"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l3 3V20.5H6zM15 3.5v3h3M9 11h6M9 15h6"></path></svg>产品规划 PRD 总设计</button>
+        <button type="button" data-view="pool"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h9"></path><path d="m16 17 2 2 3-4"></path></svg>需求池与排期</button>
+      </nav>
+      <div class="sidebar-rule"></div>
+      <p class="sidebar-note"><strong>维护基线</strong>产品范围、关键规则与版本规划以产品规划 PRD 总设计为准；需求状态与排期以需求池为准。</p>
+      <div class="source-links">
+        <a href="../docs/少年马斯克创业营系统-产品规划%20PRD%20总设计.md" target="_blank">打开产品规划 PRD 总设计 MD</a>
+        <a href="../docs/少年马斯克创业营-V1.1营地运营优化以及老师点评系统设计.md" target="_blank">打开 V1.1 营地运营与点评设计 MD</a>
+        <a href="v1-1-admin-demo.html" target="_blank">打开 V1.1 后台 Demo</a>
+        <a href="../docs/少年马斯克创业营-需求池.md" target="_blank">打开需求池 MD</a>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <section class="view active" id="documentView">
+        <div class="view-heading">
+          <div><h1>产品规划 PRD 总设计</h1><p>从营前建档到营后成长报告的业务、权限、运营与版本基线。</p></div>
+          <div class="doc-actions"><button class="button" data-open-md="../docs/少年马斯克创业营系统-产品规划%20PRD%20总设计.md" type="button">查看 Markdown</button><button class="button primary" type="button" data-switch="pool">查看需求池</button></div>
+        </div>
+        <div class="document-layout">
+          <aside class="document-toc"><strong>目录</strong><a href="#definition">产品定义</a><a href="#roles">账号与权限</a><a href="#flow">业务闭环</a><a href="#rules">关键规则</a><a href="#record">营地记录与评分</a><a href="#tech">技术与运营</a><a href="#release">版本策略</a></aside>
+          <article class="document-body">
+            <section id="definition"><h2>产品定义</h2><p><b>少年马斯克创业营系统</b>是服务创业营全周期的多角色营地管理平台：后台负责营地配置与运营，移动 Web/H5 支撑学员、老师、家长在营前、营中、营后的协作与成长沉淀。</p><p><b>版本基线：</b>V1.0 的后台 Web 已上线，覆盖用户、营地、班级、营员、老师、队伍、课程、Workshop、任务、报名审核、问卷链接、素材、相册、反馈和学生 Idea。学员、老师、家长客户端目前为设计资产，不计入已上线能力。</p><div class="summary-grid"><div class="summary-item"><b>营前</b><span>主账号、家长绑定、成长档案、营地信息、入营评测。</span></div><div class="summary-item"><b>营中</b><span>课程资料、工作坊、任务、团队、项目、老师记录。</span></div><div class="summary-item"><b>营后</b><span>人工审核内容输出；完整 AI 报告在 V1.4 建设。</span></div></div></section>
+            <section id="roles"><h2>账号与权限</h2><p>学员是主账号；学员可自行创建，也可由家长代创建。家长使用独立账号，以学生手机号或姓名发起绑定；后台具备改绑、解绑和变更日志能力。老师与管理员由后台创建和授权。</p><div class="table-wrap"><table class="doc-table"><thead><tr><th>角色</th><th>数据范围</th><th>关键动作</th><th>边界</th></tr></thead><tbody><tr><td>学员</td><td>自己的营地与内容</td><td>填信息、做任务、管理项目、看报告</td><td>不看他人原始记录和未发布报告</td></tr><tr><td>家长</td><td>已绑定学员</td><td>看课程、相册、点评、已发布报告，提交反馈</td><td>不看老师原始记录及隐私档案</td></tr><tr><td>老师</td><td>由队伍、班级、营地身份限定</td><td>查学员、做记录、评分、参与点评和报告草稿</td><td>不越权访问非负责范围</td></tr><tr><td>定义管理员</td><td>授权营地全部数据</td><td>配置、导入导出、审核报告、修改绑定</td><td>系统级权限仍受超级管理员控制</td></tr></tbody></table></div></section>
+            <section id="flow"><h2>业务闭环</h2><ol><li>创建营地与期次，导入学员并创建老师账号。</li><li>绑定家长，分配班级、队伍和负责老师。</li><li>完成信息收集，发布课程、资料、工作坊和任务。</li><li>学员在营期中学习、提交任务、发展创业项目。</li><li>老师对单个学员完成每日记录、关键事件与维度评分。</li><li>V1.1 用提示词模板调用 AI 对老师已写点评做表达美化；老师确认后保存。</li><li>V1.4 再基于可追溯证据生成完整 AI 报告草稿，人工审核发布。</li></ol></section>
+            <section id="rules"><h2>关键规则</h2><h3>任务与项目</h3><ul><li>任务在截止时间前可修改；截止后锁定学员提交，老师进行最终点评。</li><li>创业项目支持新建、从自己的历史 idea 创建分支、fork 他人的公开 idea；必须保留来源关系。</li><li>项目可见范围决定是否允许 fork，避免未经授权的创意复用。</li></ul><h3>V1.1 轻量 AI 点评美化</h3><ul><li>老师先填写原始点评，再选择后台维护的提示词模板调用 AI。</li><li>AI 仅做面向学生/家长的表达润色，不得增加未在原文中出现的事实或评价。</li><li>页面同时保留原文和美化版本；只有老师确认后才可保存或进入审核，调用记录可追溯。</li></ul><h3>V1.4 完整 AI</h3><ul><li>完整报告只基于经授权的资料、记录、任务、项目、评分及老师点评生成草稿。</li><li>每条核心评价必须可追溯到证据；AI 不可直接发布。</li></ul></section>
+            <section id="record"><h2>营地记录与六维成长评估</h2><p>营地记录以<b>单个学员</b>为最小单位。老师每日只需记录具体行为、困难、介入方式、学员回应和证据素材；关键事件和评分在需要时补充，以平衡填写效率与报告质量。</p><div class="table-wrap"><table class="doc-table"><thead><tr><th>6 天主题</th><th>重点观察</th><th>可沉淀证据</th></tr></thead><tbody><tr><td>接营与适应</td><td>安全感、自理、适应、社交初始状态</td><td>生活表现、同伴互动</td></tr><tr><td>梦想与组队</td><td>表达意愿、兴趣、团队角色、主动性</td><td>Idea Pitch、组队表现</td></tr><tr><td>问题发现与定义</td><td>问题意识、理解、调研、解决问题</td><td>问题清单、头脑风暴、市场调研</td></tr><tr><td>用户调研与 MVP</td><td>用户意识、设计思维、动手、协作</td><td>访谈、原型、推广方案</td></tr><tr><td>商业路演准备</td><td>逻辑、表达、坚持、责任感</td><td>PPT、讲稿、彩排</td></tr><tr><td>路演与结营</td><td>自信展示、项目表达、反思、综合成长</td><td>正式路演、结营反思</td></tr></tbody></table></div><h3>六维成长能力评估</h3><p>创新思维、问题解决、团队协作、沟通表达、自我驱动、批判性思维。每项采用“初级、发展中、熟练、优秀、卓越”五级定性评分，以分段式进度条呈现；每次选择必须关联事实、任务、作品或老师观察证据。该评估用于形成成长画像，不自动生成对外排名或项目评审结论。</p></section>
+            <section id="tech"><h2>技术、运营与交互基线</h2><ul><li><b>数据隔离：</b>先按营地过滤，再叠加角色、班级、队伍与家长绑定关系。</li><li><b>导入导出：</b>学员、家长绑定、老师、队伍均提供 Excel 模板、字段校验、错误明细；报告、学员、任务、点评可按范围导出。</li><li><b>用户端：</b>移动 Web/H5 优先，老师和学员在手机端完成高频动作，后台保持 Web 表格与批量操作效率。</li><li><b>风险操作：</b>改绑、移除队员、撤回报告、删除素材均需要二次确认和审计日志。</li></ul></section>
+            <section id="release"><h2>版本策略</h2><div class="table-wrap"><table class="doc-table"><thead><tr><th>版本</th><th>状态/建议节奏</th><th>目标</th></tr></thead><tbody><tr><td>V1.0 上线基线</td><td>已上线，持续验收</td><td>核验现有后台能力，严格区分上线功能和客户端设计资产</td></tr><tr><td>V1.1 营地运营优化</td><td>下一开发周期，建议 6-8 周</td><td>后台体验、老师点评、AI 点评美化、招生信息、营地组织关系和小鹅通课程权益</td></tr><tr><td>V1.2 专业评审协同</td><td>V1.1 后，建议 4-6 周</td><td>顾问老师、投资人评委、项目评分与结果管理</td></tr><tr><td>V1.3 游戏化与积分</td><td>V1.2 后，建议 4-6 周</td><td>积分、徽章、成长进度和隐私可控榜单</td></tr><tr><td>V1.4 完整 AI</td><td>V1.3 后，建议 6-8 周</td><td>证据驱动的 AI 助手、报告、内容生成和治理</td></tr></tbody></table></div></section>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="poolView">
+      <div class="view-heading"><div><h1>需求池与版本排期</h1><p>共 40 项需求。V1.0 是已上线后台基线；V1.1 聚焦后台、老师点评、轻量 AI 美化、招生信息、营地组织、日程活动与课程权益。</p></div><div class="doc-actions"><button class="button" data-open-md="../docs/少年马斯克创业营-需求池.md" type="button">查看需求池 Markdown</button><button class="button" data-open-md="../docs/少年马斯克创业营-V1.1后台管理需求与原型索引.md" type="button">查看 V1.1 后台需求</button><a class="button" href="v1-1-admin-demo.html" target="_blank">打开 V1.1 后台 Demo</a><button class="button primary" id="resetFilters" type="button">重置筛选</button></div></div>
+        <div class="pool-layout">
+          <section class="pool-table">
+            <div class="pool-toolbar"><input id="search" type="search" placeholder="搜索需求 ID、名称或模块"><select id="stateFilter"><option value="">全部开发状态</option><option value="已开发待验收">已开发待验收</option><option value="已设计待开发">已设计待开发</option><option value="待开发">待开发</option><option value="规划中">规划中</option></select><select id="versionFilter"><option value="">全部版本</option><option value="V1.0">V1.0 上线基线</option><option value="V1.1">V1.1 营地运营优化</option><option value="V1.2">V1.2 专业评审协同</option><option value="V1.3">V1.3 游戏化与积分</option><option value="V1.4">V1.4 完整 AI</option></select><select id="priorityFilter"><option value="">全部优先级</option><option value="P0">P0</option><option value="P1">P1</option><option value="P2">P2</option></select><span class="count" id="resultCount"></span></div>
+            <div class="table-scroll"><table><thead><tr><th>ID</th><th>功能</th><th>模块</th><th>优先级</th><th>开发状态</th><th>目标版本</th><th>建议排期</th></tr></thead><tbody id="poolRows"></tbody></table><p class="empty" id="emptyState">没有符合条件的需求。</p></div>
+          </section>
+          <aside class="release-plan"><header><h2>发布计划</h2><p>版本先后已确认；具体日期待研发人力和营期确认后补充。</p></header><div class="release-list"><article class="release"><h3>V1.0 上线基线</h3><time>已上线 · 持续验收</time><p>后台基础营地运营能力已上线，客户端仅为设计资产。</p><ul><li>营地、班级、营员、老师、队伍</li><li>课程、Workshop、任务、报名、相册</li></ul></article><article class="release"><h3>V1.1 营地运营优化</h3><time>下一开发周期 · 建议 6-8 周</time><p>提升后台效率，建立老师点评和招生收集体系。</p><ul><li>全局营地上下文、配置引导、批量操作</li><li>记录、评分、审核和内容输出</li><li>提示词模板 + AI 接口的点评美化</li></ul></article><article class="release"><h3>V1.2 专业评审协同</h3><time>V1.1 后 · 建议 4-6 周</time><p>引入顾问老师与投资人评委。</p><ul><li>授权范围、项目建议</li><li>评审场次、评分、排名与导出</li></ul></article><article class="release"><h3>V1.3 游戏化与积分</h3><time>V1.2 后 · 建议 4-6 周</time><p>让成长行为获得连续、可控的反馈。</p><ul><li>积分流水、徽章与成长进度</li><li>隐私可控的个人/队伍榜单</li></ul></article><article class="release"><h3>V1.4 完整 AI</h3><time>V1.3 后 · 建议 6-8 周</time><p>把 AI 接入证据、报告、内容与治理全链路。</p><ul><li>证据引用的点评与成长报告</li><li>内容/表单助手、授权与审计</li></ul></article></div><div class="legend"><div><span class="state done">已开发待验收</span></div><div><span class="state design">已设计待开发</span></div><div><span class="state todo">待开发</span></div><div><span class="state plan">规划中</span></div></div></aside>
+        </div>
+        <p class="footnote">状态说明：已开发待验收 = 已确认存在上线能力但尚未完成业务验收；已设计待开发 = 有设计稿但未确认开发；待开发 = 已确认范围但未进入研发；规划中 = 方向已明确、方案待确认。</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const requirements = [
+      ["REQ-001","系统用户、角色与权限基线核验","系统管理","P0","已开发待验收","V1.0","持续验收"],
+      ["REQ-002","营地、班级、营员、老师、队伍组织管理核验","营地组织","P0","已开发待验收","V1.0","持续验收"],
+      ["REQ-003","课程、Workshop、任务、素材内容管理核验","内容运营","P0","已开发待验收","V1.0","持续验收"],
+      ["REQ-004","报名审核、问卷链接、相册、反馈、学生 Idea 核验","招生与运营","P0","已开发待验收","V1.0","持续验收"],
+      ["REQ-005","后台用户导入导出基线核验","系统管理","P1","已开发待验收","V1.0","持续验收"],
+      ["REQ-006","学员、家长、老师客户端设计资产梳理","用户端 H5","P1","已设计待开发","V1.0","待后续排期"],
+      ["REQ-101","后台信息架构与全局营地上下文优化","后台体验","P0","待开发","V1.1","第 1-2 周"],
+      ["REQ-102","营地配置向导与完成度检查","后台体验","P0","待开发","V1.1","第 1-3 周"],
+      ["REQ-103","跨模块搜索、筛选、批量操作与状态提示","后台体验","P0","待开发","V1.1","第 2-4 周"],
+      ["REQ-104","老师身份、负责范围与工作台","老师点评","P0","待开发","V1.1","第 1-3 周"],
+      ["REQ-105","单个学员营地记录与证据附件","老师点评","P0","待开发","V1.1","第 2-5 周"],
+      ["REQ-106","任务点评、六维成长评估与发布审核","老师点评","P0","待开发","V1.1","第 3-5 周"],
+      ["REQ-107","AI 点评美化（提示词模板 + AI 接口）","老师点评","P0","待开发","V1.1","第 4-5 周"],
+      ["REQ-108","招生信息收集表单配置与版本管理","招生信息","P0","待开发","V1.1","第 1-4 周"],
+      ["REQ-109","报名审核、填写进度、退回补充与数据质量","招生信息","P0","待开发","V1.1","第 3-5 周"],
+      ["REQ-110","招生数据模板、批量导入导出与错误明细","招生信息","P0","待开发","V1.1","第 4-6 周"],
+      ["REQ-111","课程、Workshop、任务、资料的内容包与发布节奏","内容运营","P1","待开发","V1.1","第 3-6 周"],
+      ["REQ-112","营期运营看板与内容输出汇总","运营看板","P1","待开发","V1.1","第 5-8 周"],
+      ["REQ-113","用户管理与教师身份","系统管理","P0","待开发","V1.1","第 1-3 周"],
+      ["REQ-114","营地五态管理、招生容量与状态流转","营地管理","P0","待开发","V1.1","第 1-3 周"],
+      ["REQ-115","队伍管理、批量建队与导入","营地组织","P0","待开发","V1.1","第 3-5 周"],
+      ["REQ-116","营地成员关系管理","营地组织","P0","待开发","V1.1","第 2-5 周"],
+      ["REQ-117","老师与投资人评委账号、邀请和最小授权基础","师资管理","P1","待开发","V1.1","第 4-6 周"],
+      ["REQ-118","小鹅通课程同步、营地授权与账号关联","课程管理","P1","待开发","V1.1","第 5-8 周"],
+      ["REQ-119","营地日程与每日活动流程配置","营地管理","P0","待开发","V1.1","第 2-4 周"],
+      ["REQ-120","AI 提示词、模型与密钥配置中心","AI 配置中心","P1","待开发","V1.1","第 5-8 周"],
+      ["REQ-201","顾问老师角色与授权范围","专业协同","P1","规划中","V1.2","V1.1 后"],
+      ["REQ-202","顾问反馈、项目建议与处理闭环","专业协同","P1","规划中","V1.2","V1.1 后"],
+      ["REQ-203","投资人评委角色、评审场次与项目分配","项目评审","P0","规划中","V1.2","V1.1 后"],
+      ["REQ-204","投资人评分表、评语与锁定","项目评审","P0","规划中","V1.2","V1.1 后"],
+      ["REQ-205","评审汇总、排名、结果发布与导出","项目评审","P1","规划中","V1.2","V1.1 后"],
+      ["REQ-301","积分规则、积分流水与审核撤销","游戏化","P1","规划中","V1.3","V1.2 后"],
+      ["REQ-302","任务、课堂、协作行为的徽章与成就","游戏化","P1","规划中","V1.3","V1.2 后"],
+      ["REQ-303","个人成长视图与队伍榜单隐私策略","游戏化","P1","规划中","V1.3","V1.2 后"],
+      ["REQ-304","积分激励与权益兑现管理","游戏化","P2","规划中","V1.3","V1.2 后"],
+      ["REQ-401","AI 点评助手与证据引用","完整 AI","P1","规划中","V1.4","V1.3 后"],
+      ["REQ-402","AI 成长报告草稿与人工审核发布","完整 AI","P0","规划中","V1.4","V1.3 后"],
+      ["REQ-403","AI 内容助手","完整 AI","P1","规划中","V1.4","V1.3 后"],
+      ["REQ-404","AI 表单缺失识别与补充建议","完整 AI","P1","规划中","V1.4","V1.3 后"],
+      ["REQ-405","AI 授权、审计、版本与降级治理","完整 AI","P0","规划中","V1.4","V1.3 后"]
+    ];
+
+    const stateClass = { "已开发待验收": "done", "已设计待开发": "design", "待开发": "todo", "规划中": "plan" };
+    const priorityClass = { P0: "p0", P1: "p1", P2: "p2" };
+    const poolRows = document.getElementById("poolRows");
+    const emptyState = document.getElementById("emptyState");
+    const resultCount = document.getElementById("resultCount");
+
+    function renderPool() {
+      const search = document.getElementById("search").value.trim().toLowerCase();
+      const state = document.getElementById("stateFilter").value;
+      const version = document.getElementById("versionFilter").value;
+      const priority = document.getElementById("priorityFilter").value;
+      const rows = requirements.filter((item) => {
+        const haystack = item.join(" ").toLowerCase();
+        return (!search || haystack.includes(search)) && (!state || item[4] === state) && (!version || item[5] === version) && (!priority || item[3] === priority);
+      });
+      poolRows.innerHTML = rows.map(([id, name, module, p, stateName, v, schedule]) => `<tr><td><a href="../docs/少年马斯克创业营-需求池.md#${id.toLowerCase()}">${id}</a></td><td><span class="feature-name">${name}</span></td><td>${module}</td><td><span class="priority ${priorityClass[p]}">${p}</span></td><td><span class="state ${stateClass[stateName]}">${stateName}</span></td><td><span class="version">${v}</span></td><td>${schedule}</td></tr>`).join("");
+      emptyState.style.display = rows.length ? "none" : "block";
+      resultCount.textContent = `显示 ${rows.length} / ${requirements.length} 项`;
+    }
+
+    function switchView(name) {
+      document.querySelectorAll(".view").forEach((view) => view.classList.toggle("active", view.id === `${name}View`));
+      document.querySelectorAll(".nav button").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
+      history.replaceState(null, "", `#${name}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.querySelectorAll(".nav button").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
+    document.querySelectorAll("[data-switch]").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.switch)));
+    document.querySelectorAll("#search, #stateFilter, #versionFilter, #priorityFilter").forEach((element) => element.addEventListener("input", renderPool));
+    document.getElementById("resetFilters").addEventListener("click", () => { document.getElementById("search").value = ""; document.getElementById("stateFilter").value = ""; document.getElementById("versionFilter").value = ""; document.getElementById("priorityFilter").value = ""; renderPool(); });
+    document.querySelectorAll("[data-open-md]").forEach((button) => button.addEventListener("click", () => window.open(button.dataset.openMd, "_blank")));
+    document.getElementById("copyLink").addEventListener("click", async () => { const label = document.getElementById("copyLink"); try { await navigator.clipboard.writeText(location.href); label.textContent = "已复制"; } catch { label.textContent = "当前：" + (location.hash === "#pool" ? "需求池" : "产品文档"); } setTimeout(() => { label.textContent = "复制当前视图"; }, 1800); });
+    if (location.hash === "#pool") switchView("pool");
+    renderPool();
+  </script>
+</body>
+</html>

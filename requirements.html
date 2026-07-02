@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>需求池管理 · StartUPCAMP SYS</title>
+  <style>
+    :root{--blue:#1467df;--cyan:#14a3b8;--green:#0f8f67;--ink:#172b4d;--muted:#64748b;--line:#d8e4f2;--bg:#f5f8fc;--panel:#fff;--warn:#b7791f;--red:#c92a3d}*{box-sizing:border-box}body{margin:0;font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--ink);background:var(--bg)}button,input,select,textarea{font:inherit}a{color:inherit}.topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 28px;position:sticky;top:0;z-index:5}.brand{font-weight:850;color:#0f2d5c}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-top:2px}.back{border:1px solid var(--line);background:#f8fbff;border-radius:8px;padding:9px 12px;text-decoration:none;color:#075eea;font-weight:750}.page{max-width:1500px;margin:auto;padding:28px}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:0 8px 22px #14345d0a}.hero h1{margin:0;color:#102d5d;font-size:30px;letter-spacing:0}.hero p{color:var(--muted);line-height:1.7;margin:10px 0 0}.ops{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.btn{border:1px solid #b9d0f5;background:#fff;color:#075eea;border-radius:8px;padding:10px 13px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.danger{color:var(--red);border-color:#f0b8c1}.btn:disabled{opacity:.55;cursor:not-allowed}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:18px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}.stat strong{display:block;color:#102d5d;font-size:28px}.stat span{font-size:12px;color:var(--muted)}.toolbar{display:grid;grid-template-columns:minmax(220px,1fr) repeat(5,150px);gap:10px;margin:18px 0}.toolbar input,.toolbar select{border:1px solid #bfd0e8;background:#fff;border-radius:8px;padding:10px;color:var(--ink);min-width:0}.work{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}.table-scroll{overflow:auto}table{width:100%;min-width:1180px;border-collapse:collapse;font-size:14px}th{background:#edf5ff;text-align:left;font-size:12px;color:#31517e}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top}.id{font-weight:850;color:#075eea;white-space:nowrap}.title{font-weight:750;min-width:260px}.muted{color:var(--muted);font-size:12px;line-height:1.5}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:850;white-space:nowrap}.p0{background:#ffebed;color:#c92a3d}.p1{background:#fff2cf;color:#9a6500}.p2{background:#eaf2ff;color:#2863bd}.pending{background:#f1f5f9;color:#475569}.status-live{background:#dcfce7;color:#166534}.status-code{background:#dff8f6;color:#0f766e}.status-designed{background:#efe7ff;color:#6d28d9}.status-ready{background:#e0e7ff;color:#3730a3}.status-dev{background:#fff1d6;color:#b45309}.status-discuss{background:#e0f2fe;color:#0369a1}.status-plan{background:#f1f5f9;color:#334155}.row-actions{display:flex;gap:7px}.iconbtn{border:1px solid #d5e2f3;background:#fff;border-radius:7px;padding:7px 9px;color:#075eea;font-weight:800;cursor:pointer}.empty{padding:38px;text-align:center;color:var(--muted)}.hint{padding:12px 16px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);background:#fbfdff}dialog{border:0;border-radius:14px;box-shadow:0 24px 90px #142a4f55;padding:0;width:min(820px,94vw)}dialog::backdrop{background:#0f2d5c66}.dialog-head{padding:18px 22px;border-bottom:1px solid var(--line);font-weight:850;color:#102d5d}.form{padding:20px 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.form label{display:grid;gap:7px;color:var(--muted);font-size:13px}.form input,.form select,.form textarea{border:1px solid #bfd0e8;border-radius:8px;padding:10px;background:#fff;color:var(--ink);min-width:0}.form textarea{min-height:82px;resize:vertical}.wide2{grid-column:span 2}.wide4{grid-column:span 4}.dialog-foot{display:flex;justify-content:space-between;gap:10px;padding:15px 22px;border-top:1px solid var(--line)}.left-actions,.right-actions{display:flex;gap:10px;flex-wrap:wrap}.mdbox{width:100%;min-height:360px;border:0;padding:18px;font-family:"SFMono-Regular",Consolas,monospace;font-size:13px;line-height:1.6;color:#1f2937}.toast{position:fixed;right:22px;bottom:22px;background:#102d5d;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 12px 40px #102d5d40;opacity:0;transform:translateY(10px);transition:.2s;z-index:20}.toast.show{opacity:1;transform:translateY(0)}@media(max-width:1050px){.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr 1fr}.topbar{padding:0 14px}.page{padding:18px}}@media(max-width:620px){.stats,.toolbar{grid-template-columns:1fr}.form{grid-template-columns:1fr}.wide2,.wide4{grid-column:auto}.ops{justify-content:flex-start}.hero h1{font-size:24px}}
+  </style>
+</head>
+<body>
+  <div class="topbar"><a class="back" href="index.html">返回首页</a><div class="brand">需求池管理<small>StartUPCAMP SYS · Markdown 数据源</small></div></div>
+  <main class="page">
+    <section class="hero"><article class="panel"><h1>整体需求池与版本排期</h1><p>这里不再只是固定文档，而是可维护的需求管理页。V1.0 / V1.1 是已确认范围；V1.2 以后作为候选需求，必须能追溯到 V1.1 的真实需求或待讨论问题。</p></article><article class="panel ops"><button class="btn primary" id="newBtn">新建需求</button><button class="btn" id="importBtn">导入 MD</button><button class="btn" id="copyBtn">复制 MD</button><button class="btn" id="downloadBtn">下载 MD</button><button class="btn danger" id="resetBtn">重置基线</button></article></section>
+    <section class="stats" id="stats"></section>
+    <section class="toolbar"><input id="q" placeholder="搜索编号、模块、需求、来源或验收摘要"><select id="version"><option value="">版本：全部</option></select><select id="side"><option value="">端侧：全部</option></select><select id="priority"><option value="">优先级：全部</option></select><select id="status"><option value="">状态：全部</option></select><select id="type"><option value="">类型：全部</option></select></section>
+    <section class="work"><div class="table-scroll"><table><thead><tr><th>编号</th><th>需求</th><th>版本/端侧</th><th>模块</th><th>优先级</th><th>状态</th><th>来源/依据</th><th>验收或待确认</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty" hidden>没有找到符合条件的需求。</div></div><div class="hint" id="meta"></div></section>
+  </main>
+  <dialog id="editDialog"><form method="dialog"><div class="dialog-head" id="formTitle">新建需求</div><div class="form"><label>编号<input id="f_id" required></label><label>版本<input id="f_version" list="versionList" required></label><label>端侧<input id="f_side" list="sideList" required></label><label>类型<select id="f_type"><option>已确认</option><option>候选</option></select></label><label class="wide2">模块<input id="f_module" required></label><label>优先级<input id="f_priority" list="priorityList" required></label><label>状态<input id="f_status" list="statusList" required></label><label class="wide4">需求<textarea id="f_title" required></textarea></label><label class="wide2">来源/依据<input id="f_source"></label><label class="wide2">验收或待确认摘要<input id="f_acceptance"></label></div><div class="dialog-foot"><div class="left-actions"><button class="btn danger" id="deleteBtn" value="delete" type="button">删除</button></div><div class="right-actions"><button class="btn" value="cancel">取消</button><button class="btn primary" id="saveBtn" value="default">保存</button></div></div></form></dialog>
+  <dialog id="mdDialog"><form method="dialog"><div class="dialog-head" id="mdTitle">Markdown</div><textarea class="mdbox" id="mdText"></textarea><div class="dialog-foot"><div class="left-actions"><button class="btn" id="doImportBtn" type="button">从文本导入</button></div><div class="right-actions"><button class="btn" value="cancel">关闭</button></div></div></form></dialog>
+  <datalist id="versionList"><option>V1.0</option><option>V1.1</option><option>V1.2候选</option><option>V1.3候选</option><option>V1.4候选</option></datalist><datalist id="sideList"><option>用户端</option><option>后台</option><option>待讨论</option></datalist><datalist id="priorityList"><option>P0</option><option>P1</option><option>P2</option><option>待定</option></datalist><datalist id="statusList"><option>已设计</option><option>代码雏形</option><option>已设计待开发</option><option>待开发</option><option>待讨论</option><option>规划中</option></datalist>
+  <div class="toast" id="toast"></div>
+  <script src="requirements-data.js"></script>
+  <script>
+    const storeKey='startupcamp-requirements-manager-v2';
+    const fields=['id','version','side','module','title','priority','status','source','acceptance','type'];
+    let editingId=null;let requirements=load();
+    function cloneBaseline(){return (window.STARTUPCAMP_REQUIREMENTS||[]).map(x=>({...x}));}
+    function load(){try{const saved=localStorage.getItem(storeKey);return saved?JSON.parse(saved):cloneBaseline()}catch(e){return cloneBaseline()}}
+    function persist(){localStorage.setItem(storeKey,JSON.stringify(requirements));}
+    function uniq(key){return [...new Set(requirements.map(r=>r[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-Hans-CN'));}
+    function fillFilters(){[['version','version'],['side','side'],['priority','priority'],['status','status'],['type','type']].forEach(([id,key])=>{const el=document.getElementById(id);const val=el.value;el.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());uniq(key).forEach(v=>el.append(new Option(v,v)));el.value=val;});}
+    function clsPriority(v){return v==='P0'?'p0':v==='P1'?'p1':v==='P2'?'p2':'pending'}
+    function clsStatus(v){if(v.includes('上线'))return 'status-live';if(v.includes('代码'))return 'status-code';if(v.includes('已设计待开发'))return 'status-ready';if(v.includes('已设计'))return 'status-designed';if(v.includes('待开发'))return 'status-dev';if(v.includes('讨论'))return 'status-discuss';if(v.includes('规划'))return 'status-plan';return 'pending'}
+    function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+    function filtered(){const q=document.getElementById('q').value.trim().toLowerCase();return requirements.filter(r=>{const text=fields.map(k=>r[k]||'').join(' ').toLowerCase();return (!q||text.includes(q))&&['version','side','priority','status','type'].every(k=>!document.getElementById(k).value||r[k]===document.getElementById(k).value);});}
+    function renderStats(data){const total=requirements.length,v11=requirements.filter(r=>r.version==='V1.1').length,p0=requirements.filter(r=>r.priority==='P0').length,candidates=requirements.filter(r=>r.type==='候选').length,shown=data.length;document.getElementById('stats').innerHTML=[['总需求',total],['当前显示',shown],['V1.1',v11],['P0',p0],['候选待讨论',candidates]].map(([l,n])=>`<div class="stat"><strong>${n}</strong><span>${l}</span></div>`).join('');}
+    function render(){fillFilters();const data=filtered();document.getElementById('rows').innerHTML=data.map(r=>`<tr><td class="id">${escapeHtml(r.id)}</td><td class="title">${escapeHtml(r.title)}<div class="muted">${escapeHtml(r.type||'已确认')}</div></td><td><b>${escapeHtml(r.version)}</b><div class="muted">${escapeHtml(r.side)}</div></td><td>${escapeHtml(r.module)}</td><td><span class="pill ${clsPriority(r.priority)}">${escapeHtml(r.priority)}</span></td><td><span class="pill ${clsStatus(r.status)}">${escapeHtml(r.status)}</span></td><td>${escapeHtml(r.source)}</td><td>${escapeHtml(r.acceptance)}</td><td><div class="row-actions"><button class="iconbtn" onclick="openEdit('${escapeHtml(r.id)}')">编辑</button><button class="iconbtn" onclick="removeReq('${escapeHtml(r.id)}')">删除</button></div></td></tr>`).join('');document.getElementById('empty').hidden=!!data.length;document.getElementById('meta').textContent=`显示 ${data.length} / ${requirements.length} 条。所有修改已保存到当前浏览器；需要落成文件时使用“复制 MD”或“下载 MD”。`;renderStats(data);}
+    function openEdit(id){editingId=id||null;const r=id?requirements.find(x=>x.id===id):{id:nextId(),version:'V1.1',side:'用户端',module:'',title:'',priority:'P1',status:'待开发',source:'',acceptance:'',type:'已确认'};document.getElementById('formTitle').textContent=id?'编辑需求':'新建需求';fields.forEach(k=>{const el=document.getElementById('f_'+k);if(el)el.value=r[k]||''});document.getElementById('deleteBtn').style.visibility=id?'visible':'hidden';document.getElementById('editDialog').showModal();}
+    function nextId(){const nums=requirements.map(r=>String(r.id).match(/CUST-(\d+)/)).filter(Boolean).map(m=>+m[1]);return 'CUST-'+String((Math.max(0,...nums)+1)).padStart(3,'0');}
+    function collectForm(){const out={};fields.forEach(k=>{const el=document.getElementById('f_'+k);if(el)out[k]=el.value.trim();});return out;}
+    document.getElementById('saveBtn').onclick=e=>{const data=collectForm();if(!data.id||!data.title||!data.module){e.preventDefault();toast('编号、模块、需求不能为空');return}const dup=requirements.some(r=>r.id===data.id&&r.id!==editingId);if(dup){e.preventDefault();toast('编号已存在，请换一个');return}if(editingId){requirements=requirements.map(r=>r.id===editingId?data:r)}else{requirements.unshift(data)}persist();render();toast('已保存')};
+    document.getElementById('deleteBtn').onclick=()=>{if(editingId)removeReq(editingId,true);document.getElementById('editDialog').close();};
+    function removeReq(id,skipConfirm){if(skipConfirm||confirm('确定删除 '+id+'？')){requirements=requirements.filter(r=>r.id!==id);persist();render();toast('已删除')}}
+    function mdEscape(s){return String(s||'').replace(/\|/g,'/').replace(/\n/g,' ');}
+    function table(rows,heads){return ['| '+heads.join(' | ')+' |','| '+heads.map(()=> '---').join(' | ')+' |',...rows.map(r=>'| '+heads.map(h=>mdEscape(r[h])).join(' | ')+' |')].join('\n');}
+    function toMarkdown(){
+      const now=new Date().toISOString().slice(0,10);
+      const route=[['V1.0','基础方案','已讨论','用户端和后台基础闭环。'],['V1.1','运营优化','当前重点','注册建档、老师记录、每日记录推送、家长回执、后台运营优化。'],['V1.2候选','记录/报告闭环增强','候选','基于 V1.1 记录与回执，讨论成长报告、审核流、通知机制。'],['V1.3候选','专业协同','候选','顾问老师、投资人评委、项目评审是否纳入产品。'],['V1.4候选','AI 与数据治理','候选','AI 成长报告、AI 内容助手、审计、降级治理。']];
+      const confirmed=requirements.filter(r=>r.type!=='候选');
+      const candidates=requirements.filter(r=>r.type==='候选');
+      const parts=[];
+      parts.push('# 需求池与版本排期');
+      parts.push('');
+      parts.push('更新时间：'+now+'  ');
+      parts.push('文档状态：由 requirements.html 导出的需求池快照  ');
+      parts.push('说明：请优先使用 `requirements.html` 做增删改查；本文件作为 Markdown 数据备份和评审快照。');
+      parts.push('');
+      parts.push('## 1. 维护规则');
+      parts.push('');
+      parts.push('- 所有需求必须有编号、模块、端侧、优先级、目标版本、状态和验收摘要。');
+      parts.push('- V1.1 需求必须能对应到现有讨论、原型或代码。');
+      parts.push('- V1.2 以后只记录“基于 V1.1 产生的后续候选需求”，逐条确认后才能进入正式排期。');
+      parts.push('- 静态页面的编辑会保存到当前浏览器；需要沉淀为文件时，从管理页复制或下载 Markdown。');
+      parts.push('');
+      parts.push('## 2. 版本路线');
+      parts.push('');
+      parts.push(table(route.map(r=>({版本:r[0],主题:r[1],状态:r[2],目标:r[3]})),['版本','主题','状态','目标']));
+      parts.push('');
+      parts.push('## 3. 已确认需求池');
+      parts.push('');
+      parts.push(table(confirmed.map(r=>({'编号':r.id,'版本':r.version,'端侧':r.side,'模块':r.module,'需求':r.title,'优先级':r.priority,'状态':r.status,'来源/依据':r.source,'验收摘要':r.acceptance})),['编号','版本','端侧','模块','需求','优先级','状态','来源/依据','验收摘要']));
+      parts.push('');
+      parts.push('## 4. V1.2 以后候选需求池：待讨论确认');
+      parts.push('');
+      parts.push('这些不是已确定排期，而是从 V1.1 已讨论需求自然延伸出的真实问题。');
+      parts.push('');
+      parts.push(table(candidates.map(r=>({'候选编号':r.id,'候选版本':r.version,'来源需求':r.source,'候选方向':r.module,'需要讨论的问题':r.title,'确认口径':r.acceptance})),['候选编号','候选版本','来源需求','候选方向','需要讨论的问题','确认口径']));
+      parts.push('');
+      parts.push('## 5. 当前下一步建议');
+      parts.push('');
+      parts.push('1. 先确认 V1.1 的记录状态机和字段模型。');
+      parts.push('2. 再确认家长回执是否进入反馈工单，还是只做已读/留言。');
+      parts.push('3. 最后逐条讨论候选需求，确认是否进入正式版本排期。');
+      return parts.join('\n');
+    }
+    async function copyMd(){const md=toMarkdown();try{await navigator.clipboard.writeText(md);toast('Markdown 已复制')}catch(e){openMd('复制 Markdown',md);toast('请从弹窗手动复制')}}
+    function downloadMd(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([toMarkdown()],{type:'text/markdown;charset=utf-8'}));a.download='30-需求池与版本排期.md';a.click();URL.revokeObjectURL(a.href);toast('已生成 Markdown 文件')}
+    function openMd(title,text){document.getElementById('mdTitle').textContent=title;document.getElementById('mdText').value=text||'';document.getElementById('mdDialog').showModal();}
+    function importMarkdown(text){
+      const lines=text.split(/\r?\n/).filter(l=>/^\|.+\|$/.test(l)&&!/^\|\s*-+/.test(l));
+      const out=[];let heads=null;
+      for(const line of lines){
+        const cells=line.slice(1,-1).split('|').map(s=>s.trim());
+        if(cells.includes('编号')||cells.includes('候选编号')){heads=cells;continue}
+        if(!heads)continue;
+        const obj={};heads.forEach((h,i)=>obj[h]=cells[i]||'');
+        if(obj['编号'])out.push({id:obj['编号'],version:obj['版本']||'V1.1',side:obj['端侧']||'用户端',module:obj['模块']||'',title:obj['需求']||'',priority:obj['优先级']||'P1',status:obj['状态']||'待开发',source:obj['来源/依据']||'',acceptance:obj['验收摘要']||'',type:'已确认'});
+        if(obj['候选编号'])out.push({id:obj['候选编号'],version:obj['候选版本']||'V1.2候选',side:'待讨论',module:obj['候选方向']||'',title:obj['需要讨论的问题']||'',priority:'待定',status:'待讨论',source:obj['来源需求']||'',acceptance:obj['确认口径']||'',type:'候选'});
+      }
+      if(!out.length){toast('没有识别到可导入的需求表');return}
+      requirements=out;persist();render();document.getElementById('mdDialog').close();toast('已导入 '+out.length+' 条需求')
+    }
+    function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('show'),1800)}
+    ['q','version','side','priority','status','type'].forEach(id=>document.getElementById(id).addEventListener('input',render));document.getElementById('newBtn').onclick=()=>openEdit();document.getElementById('copyBtn').onclick=copyMd;document.getElementById('downloadBtn').onclick=downloadMd;document.getElementById('importBtn').onclick=()=>openMd('导入 Markdown',toMarkdown());document.getElementById('doImportBtn').onclick=()=>importMarkdown(document.getElementById('mdText').value);document.getElementById('resetBtn').onclick=()=>{if(confirm('确定恢复到当前基线数据？本浏览器里的修改会被清空。')){requirements=cloneBaseline();persist();render();toast('已恢复基线')}};render();
+  </script>
+</body>
+</html>

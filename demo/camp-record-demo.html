@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>少年马斯克创业营｜营地记录组件 Demo</title>
+  <style>
+    :root {
+      --bg: #eef6fb;
+      --paper: #ffffff;
+      --paper-soft: #f6f9fc;
+      --ink: #15202e;
+      --muted: #687586;
+      --line: #dce6ef;
+      --blue: #1267e8;
+      --blue-soft: #e9f2ff;
+      --green: #16a876;
+      --green-soft: #e8f8f1;
+      --amber: #f2a70c;
+      --amber-soft: #fff7dc;
+      --red: #ef4444;
+      --shadow: 0 18px 46px rgba(28, 70, 112, 0.13);
+      --radius: 8px;
+      --sidebar: 280px;
+      --inspector: 360px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(18, 103, 232, 0.08), rgba(22, 168, 118, 0.07) 38%, rgba(242, 167, 12, 0.05)),
+        var(--bg);
+      color: var(--ink);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid rgba(203, 216, 229, 0.8);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1267e8, #19b98a);
+      box-shadow: 0 10px 22px rgba(18, 103, 232, 0.22);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-button,
+    .primary-button,
+    .danger-button {
+      min-height: 36px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 0 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 650;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .ghost-button {
+      background: white;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .primary-button {
+      color: white;
+      background: var(--blue);
+      box-shadow: 0 10px 20px rgba(18, 103, 232, 0.2);
+    }
+
+    .danger-button {
+      color: white;
+      background: var(--red);
+    }
+
+    .ghost-button:hover,
+    .primary-button:hover,
+    .danger-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .workbench {
+      width: min(1760px, calc(100vw - 40px));
+      margin: 22px auto 32px;
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(540px, 1fr) var(--inspector);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(213, 225, 236, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h2,
+    .section-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .panel-header span,
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .student-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .student-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1267e8, #5fb5ff);
+      box-shadow: 0 8px 18px rgba(18, 103, 232, 0.24);
+      flex: 0 0 auto;
+    }
+
+    .student-row h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .student-row p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 0 9px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .tag.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .tag.amber {
+      color: #99690c;
+      background: var(--amber-soft);
+    }
+
+    .quick-facts {
+      display: grid;
+      gap: 8px;
+      padding-top: 6px;
+    }
+
+    .fact {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: var(--paper-soft);
+      font-size: 12px;
+    }
+
+    .fact strong {
+      font-size: 12px;
+    }
+
+    .day-list,
+    .activity-list {
+      display: grid;
+      gap: 8px;
+      padding: 0 18px 18px;
+    }
+
+    .day-item,
+    .activity-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 11px 12px;
+      cursor: pointer;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .day-item strong,
+    .activity-item strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .day-item span,
+    .activity-item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .day-item.active,
+    .activity-item.active {
+      border-color: rgba(18, 103, 232, 0.55);
+      background: var(--blue-soft);
+      box-shadow: 0 8px 16px rgba(18, 103, 232, 0.1);
+    }
+
+    .record-main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .record-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      background: white;
+      border: 1px solid rgba(213, 225, 236, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar-title h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .toolbar-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    label small {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper-soft);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    input,
+    select {
+      height: 42px;
+      padding: 0 12px;
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      padding: 12px;
+      line-height: 1.55;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(18, 103, 232, 0.55);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(18, 103, 232, 0.1);
+    }
+
+    .dimension-picks,
+    .intervention-picks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .choice-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: white;
+      color: var(--ink);
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .choice-chip input {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      accent-color: var(--blue);
+    }
+
+    .choice-chip:has(input:checked) {
+      border-color: rgba(18, 103, 232, 0.55);
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .upload-tile {
+      min-height: 84px;
+      border: 1px dashed #b9c8d8;
+      border-radius: 8px;
+      background: var(--paper-soft);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .upload-tile.filled {
+      border-style: solid;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(18, 103, 232, 0.14), rgba(22, 168, 118, 0.12)),
+        white;
+      font-weight: 700;
+    }
+
+    .event-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 18px 18px;
+    }
+
+    .event-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--paper-soft);
+    }
+
+    .event-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .event-card p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .score-summary {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+    }
+
+    .score-ring {
+      --score: 70%;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--blue) var(--score), #e4edf5 0);
+      position: relative;
+    }
+
+    .score-ring::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .score-ring span {
+      position: relative;
+      z-index: 1;
+      font-size: 25px;
+      font-weight: 880;
+    }
+
+    .score-summary h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .score-summary p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .score-list {
+      display: grid;
+      gap: 11px;
+      padding: 0 18px 18px;
+    }
+
+    .dimension-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .dimension-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      background: var(--paper-soft);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dimension-head strong {
+      font-size: 13px;
+    }
+
+    .dimension-head span {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .indicator-row {
+      display: grid;
+      grid-template-columns: 1fr 112px;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .indicator-row:last-child {
+      border-bottom: none;
+    }
+
+    .indicator-copy strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .indicator-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .score-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .score-button {
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: white;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .score-button.active {
+      color: white;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .ai-panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .ai-card {
+      border-radius: 8px;
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(22, 168, 118, 0.1), rgba(18, 103, 232, 0.08));
+      border: 1px solid rgba(22, 168, 118, 0.18);
+    }
+
+    .ai-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .ai-card p,
+    .ai-card li {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .ai-card p {
+      margin: 7px 0 0;
+    }
+
+    .ai-card ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .status-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 14px 18px;
+      border-top: 1px solid var(--line);
+      background: var(--paper-soft);
+    }
+
+    .mobile-tabs {
+      display: none;
+      position: sticky;
+      bottom: 0;
+      z-index: 15;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+    }
+
+    .mobile-tabs button {
+      height: 52px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .mobile-tabs button.active {
+      color: var(--blue);
+    }
+
+    @media (max-width: 1280px) {
+      .workbench {
+        grid-template-columns: 250px minmax(500px, 1fr);
+      }
+
+      .inspector {
+        grid-column: 1 / -1;
+      }
+
+      .score-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app-shell {
+        grid-template-rows: 58px 1fr;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand h1 {
+        font-size: 15px;
+      }
+
+      .brand p,
+      .top-actions .ghost-button {
+        display: none;
+      }
+
+      .workbench {
+        width: 100%;
+        margin: 0;
+        display: block;
+      }
+
+      .panel,
+      .record-toolbar {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .sidebar,
+      .inspector,
+      .record-main {
+        display: none;
+      }
+
+      .view-student .sidebar,
+      .view-record .record-main,
+      .view-score .inspector {
+        display: block;
+      }
+
+      .record-main {
+        padding-bottom: 56px;
+      }
+
+      .form-grid,
+      .event-strip,
+      .upload-grid,
+      .score-list {
+        grid-template-columns: 1fr;
+      }
+
+      .record-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions {
+        gap: 6px;
+      }
+
+      .primary-button,
+      .ghost-button {
+        padding: 0 10px;
+      }
+
+      .mobile-tabs {
+        display: grid;
+      }
+    }
+  </style>
+</head>
+<body class="view-record">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">创</div>
+        <div>
+          <h1>少年马斯克创业营｜营地记录</h1>
+          <p>单个学员观察、创业者维度评分与 AI 报告素材确认</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="ghost-button" type="button">保存草稿</button>
+        <button class="primary-button" type="button" id="generateBtn">生成 AI 摘要</button>
+      </div>
+    </header>
+
+    <main class="workbench">
+      <aside class="panel sidebar">
+        <div class="student-card">
+          <div class="student-row">
+            <div class="avatar">张</div>
+            <div>
+              <h3>张梓萱</h3>
+              <p>第 27 期 · 创想组 · 队员</p>
+            </div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">学员主账号</span>
+            <span class="tag green">家长已绑定</span>
+            <span class="tag amber">报告素材 8 条</span>
+          </div>
+          <div class="quick-facts">
+            <div class="fact"><span>家长期待</span><strong>提升主动表达</strong></div>
+            <div class="fact"><span>好奇问题</span><strong>书包太重</strong></div>
+            <div class="fact"><span>安全提醒</span><strong>无运动限制</strong></div>
+          </div>
+        </div>
+
+        <div class="panel-header">
+          <h2>6 天 5 夜流程</h2>
+          <span id="selectedDayLabel">第 3 天</span>
+        </div>
+        <div class="day-list" id="dayList"></div>
+
+        <div class="panel-header">
+          <h2>当天活动</h2>
+          <span>按流程选记录场景</span>
+        </div>
+        <div class="activity-list" id="activityList"></div>
+      </aside>
+
+      <section class="record-main">
+        <div class="record-toolbar">
+          <div class="toolbar-title">
+            <h2 id="recordTitle">第 3 天 · 问题发现与定义</h2>
+            <p id="recordSubtitle">围绕项目发现问题、定义问题、头脑风暴与市场调研。</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag green">单个学员记录</span>
+            <span class="tag">推荐进入报告</span>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>每日学员观察记录表</h2>
+            <span>老师填写 · 约 2 分钟</span>
+          </div>
+          <form class="form-grid">
+            <div class="field">
+              <label for="participation">学员参与状态 <small>课程状态</small></label>
+              <select id="participation">
+                <option>主动参与</option>
+                <option selected>适当参与</option>
+                <option>被动参与</option>
+                <option>未参与</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="recordTime">观察时段 <small>可按天调整</small></label>
+              <select id="recordTime">
+                <option>第一节</option>
+                <option>第二节</option>
+                <option selected>第三节 · 活动</option>
+                <option>第四节</option>
+                <option>第五节</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="behavior">今日关键表现 <small>写具体行为，不写泛泛评价</small></label>
+              <textarea id="behavior">在头脑风暴中一开始不敢主动发言，但听到队友讨论“书包太重”后，用画画方式提出“长翅膀的书包”方案，并愿意向老师解释自己的想法。</textarea>
+            </div>
+
+            <div class="field">
+              <label for="challenge">今日困难/挑战</label>
+              <textarea id="challenge">文字表达和书写速度较慢，导致她在记录用户问题时有些犹豫，需要老师提醒可以用图画或关键词辅助表达。</textarea>
+            </div>
+            <div class="field">
+              <label for="response">老师介入与学员回应</label>
+              <textarea id="response">老师将任务拆成“画出来、讲出来、再写关键词”三步后，她能更顺畅地表达创意，也愿意补充自己的想法。</textarea>
+            </div>
+
+            <div class="field full">
+              <label>老师介入方式</label>
+              <div class="intervention-picks">
+                <label class="choice-chip"><input type="checkbox" checked> 提问引导</label>
+                <label class="choice-chip"><input type="checkbox" checked> 任务拆解</label>
+                <label class="choice-chip"><input type="checkbox"> 情绪安抚</label>
+                <label class="choice-chip"><input type="checkbox"> 同伴协助</label>
+                <label class="choice-chip"><input type="checkbox"> 示范</label>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label>关联记录维度 <small>影响 AI 报告素材摘要</small></label>
+              <div class="dimension-picks" id="dimensionPicks"></div>
+            </div>
+
+            <div class="field full">
+              <label for="summary">今日一句话总结</label>
+              <input id="summary" value="她通过画画找到了适合自己的表达方式，展现出丰富想象力。">
+            </div>
+
+            <div class="field full">
+              <label>证据素材</label>
+              <div class="upload-grid">
+                <div class="upload-tile filled">作品照片<br>创意书包草图</div>
+                <div class="upload-tile filled">课堂截图<br>头脑风暴便签</div>
+                <div class="upload-tile">+ 上传图片</div>
+                <div class="upload-tile">+ 添加附件</div>
+              </div>
+            </div>
+          </form>
+          <div class="panel-header">
+            <h2>关键事件候选</h2>
+            <span>勾选后进入报告素材池</span>
+          </div>
+          <div class="event-strip">
+            <article class="event-card">
+              <strong>创意表达</strong>
+              <p>用图画提出“长翅膀的书包”，绕开书写困难。</p>
+            </article>
+            <article class="event-card">
+              <strong>困难突破</strong>
+              <p>从不敢开口到愿意解释作品，表达状态有变化。</p>
+            </article>
+            <article class="event-card">
+              <strong>团队协作</strong>
+              <p>听取队友问题后补充自己的解决方案。</p>
+            </article>
+            <article class="event-card">
+              <strong>老师建议</strong>
+              <p>继续用画图 + 关键词的方式保护创意表达。</p>
+            </article>
+          </div>
+          <div class="status-footer">
+            <button class="ghost-button" type="button">保存为草稿</button>
+            <button class="primary-button" type="button">提交记录</button>
+          </div>
+        </section>
+      </section>
+
+      <aside class="panel inspector">
+        <div class="panel-header">
+          <h2>创业者评选维度</h2>
+          <span>18 项 · 72 分</span>
+        </div>
+        <div class="score-summary">
+          <div class="score-ring" id="scoreRing"><span id="totalScore">52</span></div>
+          <div>
+            <h3 id="scoreLevel">创业实践者</h3>
+            <p>当前优势集中在创意独特性、团队配合与责任感；建议继续发展问题定义和商业表达。</p>
+          </div>
+        </div>
+        <div class="score-list" id="scoreList"></div>
+        <div class="ai-panel">
+          <div class="ai-card">
+            <strong>AI 报告素材摘要</strong>
+            <p id="aiSummary">今日记录可用于“创意表达、困难突破、家庭陪伴建议”三个段落。建议报告中强调她用画画表达创意的方式，并鼓励家长继续保护孩子的想象力。</p>
+          </div>
+          <div class="ai-card">
+            <strong>建议进入报告的证据</strong>
+            <ul id="evidenceList">
+              <li>头脑风暴中提出“长翅膀的书包”。</li>
+              <li>在老师拆解任务后能主动解释作品。</li>
+              <li>文字表达困难时选择用图画继续推进。</li>
+            </ul>
+          </div>
+          <div class="ai-card report-preview" id="reportPreview" hidden>
+            <strong>报告段落预览</strong>
+            <p id="reportPreviewText"></p>
+          </div>
+          <button class="primary-button" type="button" id="previewReportBtn">预览报告段落</button>
+        </div>
+      </aside>
+    </main>
+    <nav class="mobile-tabs">
+      <button type="button" data-view="view-student">学员</button>
+      <button type="button" class="active" data-view="view-record">记录</button>
+      <button type="button" data-view="view-score">评分</button>
+    </nav>
+  </div>
+
+  <script>
+    const days = [
+      { day: "第 1 天", title: "接营与适应", desc: "接营、破冰、生活适应", activities: ["接营", "破冰团建", "生活规则", "初始观察"] },
+      { day: "第 2 天", title: "激发梦想与组队", desc: "开营仪式、Idea Pitch、个人路演、小组会议", activities: ["开营仪式", "优化 Idea Pitch", "个人路演", "小组会议"] },
+      { day: "第 3 天", title: "问题发现与定义", desc: "围绕项目发现问题、定义问题、头脑风暴与市场调研", activities: ["发现问题", "定义问题", "头脑风暴", "市场调研"] },
+      { day: "第 4 天", title: "用户调研与 MVP", desc: "用户调研、产品 MVP 构思、宣传方案、MVP 制作", activities: ["用户调研", "产品 MVP 构思", "宣传方案", "MVP 制作"] },
+      { day: "第 5 天", title: "商业路演准备", desc: "商业路演培训、PPT 制作、演讲稿和彩排", activities: ["商业路演培训", "PPT 制作", "演讲稿", "彩排工作"] },
+      { day: "第 6 天", title: "路演与结营", desc: "正式路演、颁奖、结营仪式和综合反馈", activities: ["正式路演", "现场回应", "结营反思", "综合表现"] }
+    ];
+
+    const pickDimensions = ["创新思维", "设计思维", "自信表达", "问题发现力", "团队合作", "责任感", "生活自理", "深度思考"];
+
+    const scoreGroups = [
+      ["问题发现力", [["真实问题识别", "从生活/用户中发现真实问题"], ["用户需求理解", "理解用户痛点"], ["问题定义清晰度", "把问题说清楚"]]],
+      ["创新解决力", [["创意独特性", "方案是否有新意"], ["方案可行性", "能否落到产品/服务"], ["迭代能力", "根据反馈修改"]]],
+      ["商业思维", [["价值主张", "为谁解决什么问题"], ["市场与竞品意识", "理解目标用户和替代方案"], ["商业表达", "讲清商业逻辑"]]],
+      ["执行与交付", [["任务完成度", "按时完成分工"], ["作品/原型质量", "MVP/PPT/材料质量"], ["时间管理", "有限时间推进项目"]]],
+      ["团队协作与领导力", [["角色承担", "认领角色并负责"], ["沟通协作", "倾听表达和配合"], ["团队影响力", "鼓励团队解决冲突"]]],
+      ["创业者心智", [["自信表达", "公开表达和展示"], ["韧性与坚持", "遇难继续尝试"], ["责任感与使命感", "理解项目价值"]]]
+    ];
+
+    const scores = new Map();
+    scoreGroups.flatMap(group => group[1]).forEach(([name]) => {
+      const initial = {
+        "创意独特性": 4,
+        "角色承担": 3,
+        "沟通协作": 3,
+        "责任感与使命感": 3,
+        "自信表达": 2,
+        "问题定义清晰度": 2,
+        "商业表达": 2
+      }[name] || 3;
+      scores.set(name, initial);
+    });
+
+    let currentDay = 2;
+    let currentActivity = 2;
+
+    const dayList = document.getElementById("dayList");
+    const activityList = document.getElementById("activityList");
+    const scoreList = document.getElementById("scoreList");
+    const dimensionPicks = document.getElementById("dimensionPicks");
+
+    function renderDays() {
+      dayList.innerHTML = "";
+      days.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `day-item ${index === currentDay ? "active" : ""}`;
+        button.innerHTML = `<strong>${item.day} · ${item.title}</strong><span>${item.desc}</span>`;
+        button.addEventListener("click", () => {
+          currentDay = index;
+          currentActivity = 0;
+          updateDay();
+        });
+        dayList.appendChild(button);
+      });
+    }
+
+    function renderActivities() {
+      activityList.innerHTML = "";
+      days[currentDay].activities.forEach((name, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `activity-item ${index === currentActivity ? "active" : ""}`;
+        button.innerHTML = `<strong>${name}</strong><span>${activityHint(name)}</span>`;
+        button.addEventListener("click", () => {
+          currentActivity = index;
+          renderActivities();
+        });
+        activityList.appendChild(button);
+      });
+    }
+
+    function activityHint(name) {
+      const hints = {
+        "发现问题": "观察问题意识",
+        "定义问题": "观察理解力",
+        "头脑风暴": "观察创新思维",
+        "市场调研": "观察沟通能力",
+        "MVP 制作": "观察交付能力",
+        "正式路演": "观察自信表达"
+      };
+      return hints[name] || "记录关键表现";
+    }
+
+    function updateDay() {
+      const item = days[currentDay];
+      document.getElementById("selectedDayLabel").textContent = item.day;
+      document.getElementById("recordTitle").textContent = `${item.day} · ${item.title}`;
+      document.getElementById("recordSubtitle").textContent = item.desc + "。";
+      renderDays();
+      renderActivities();
+    }
+
+    function renderDimensionPicks() {
+      dimensionPicks.innerHTML = "";
+      pickDimensions.forEach((name, index) => {
+        const label = document.createElement("label");
+        label.className = "choice-chip";
+        label.innerHTML = `<input type="checkbox" ${index < 4 ? "checked" : ""}> ${name}`;
+        label.querySelector("input").addEventListener("change", updateAiSummary);
+        dimensionPicks.appendChild(label);
+      });
+    }
+
+    function renderScores() {
+      scoreList.innerHTML = "";
+      scoreGroups.forEach(([groupName, indicators]) => {
+        const card = document.createElement("article");
+        card.className = "dimension-card";
+        const groupScore = indicators.reduce((sum, [name]) => sum + scores.get(name), 0);
+        card.innerHTML = `
+          <div class="dimension-head">
+            <strong>${groupName}</strong>
+            <span>${groupScore}/12</span>
+          </div>
+        `;
+        indicators.forEach(([name, desc]) => {
+          const row = document.createElement("div");
+          row.className = "indicator-row";
+          row.innerHTML = `
+            <div class="indicator-copy"><strong>${name}</strong><span>${desc}</span></div>
+            <div class="score-buttons">
+              ${[1, 2, 3, 4].map(value => `<button type="button" class="score-button ${scores.get(name) === value ? "active" : ""}" data-name="${name}" data-value="${value}">${value}</button>`).join("")}
+            </div>
+          `;
+          card.appendChild(row);
+        });
+        scoreList.appendChild(card);
+      });
+
+      scoreList.querySelectorAll(".score-button").forEach(button => {
+        button.addEventListener("click", () => {
+          scores.set(button.dataset.name, Number(button.dataset.value));
+          renderScores();
+          updateScoreSummary();
+        });
+      });
+      updateScoreSummary();
+    }
+
+    function updateScoreSummary() {
+      const total = [...scores.values()].reduce((sum, value) => sum + value, 0);
+      const percent = Math.round((total / 72) * 100);
+      const level = total >= 60 ? "创业领航者" : total >= 48 ? "创业实践者" : total >= 36 ? "创想探索者" : "潜力萌芽者";
+      document.getElementById("totalScore").textContent = total;
+      document.getElementById("scoreLevel").textContent = level;
+      document.getElementById("scoreRing").style.setProperty("--score", `${percent}%`);
+      updateAiSummary();
+    }
+
+    function updateAiSummary() {
+      const selected = [...dimensionPicks.querySelectorAll("input:checked")].map(input => input.parentElement.textContent.trim());
+      const total = [...scores.values()].reduce((sum, value) => sum + value, 0);
+      const focus = selected.slice(0, 3).join("、") || "关键表现";
+      document.getElementById("aiSummary").textContent = `当前 ${total}/72 分，记录可用于“${focus}”相关段落。建议报告中引用具体行为，并将成长建议落到家庭可执行练习。`;
+    }
+
+    document.querySelectorAll(".mobile-tabs button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.body.className = button.dataset.view;
+        document.querySelectorAll(".mobile-tabs button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      updateAiSummary();
+      document.getElementById("aiSummary").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    document.getElementById("previewReportBtn").addEventListener("click", () => {
+      const summary = document.getElementById("summary").value;
+      const preview = document.getElementById("reportPreview");
+      document.getElementById("reportPreviewText").textContent = `在今天的营地活动中，张梓萱展现出独特的创意表达方式。${summary} 建议家长在日常交流中继续鼓励她用图画、关键词和口头表达组合呈现想法，让孩子更自信地说出自己的创意。`;
+      preview.hidden = false;
+      preview.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    renderDays();
+    renderActivities();
+    renderDimensionPicks();
+    renderScores();
+  </script>
+</body>
+</html>
